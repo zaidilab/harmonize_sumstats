@@ -16,7 +16,6 @@ output_files/
 dataset/
 *.tsv
 *.tsv.gz
-*.snplist
 
 # Ignore system-generated files
 .DS_Store
