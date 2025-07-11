@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.log
+
+# VS Code and editor settings
+.vscode/
+
+# Conda environment ignores
+*.conda
+*.env
+*.venv
+
+# Output directory and GWAS files 
+output_files/
+dataset/
+*.tsv
+*.tsv.gz
+*.snplist
+
+# Ignore system-generated files
+.DS_Store
+Thumbs.db
+
+# Compiled binary
+*.exe
