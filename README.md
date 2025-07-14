@@ -21,9 +21,9 @@ cd gwas-practice-project/code
 
 ### 2. Create and activate conda environment
 
-These commands creates a new [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) environment named `gwas_env` using the dependencies listed in environment.yml and activates the `gwas_env`, so you're ready to run the project.
+These commands creates a new Conda environment named `gwas_env` using the dependencies listed in environment.yml and activates the `gwas_env`, so you're ready to run the project.
 
-Make sure to have Conda installed before executing the following commands. 
+Make sure to have [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) installed before executing the following commands. 
 
 ```
 conda env create --file environment.yml
