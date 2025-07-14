@@ -33,7 +33,8 @@ genome_build = args.genome_build
 gwas_summary_path = args.ip_path
 op_path = args.op_path
 
-ref_snp_list_path = "../data/1kg_hg38_hm3.snplist"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+ref_snp_list_path = os.path.normpath(os.path.join(script_dir, "..", "data", "1kg_hg38_hm3.snplist"))
 output_filename = "GWAS_new_1M.tsv"
 
 # Schema Definition for Reference SNP list
