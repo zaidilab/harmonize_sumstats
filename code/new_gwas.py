@@ -80,9 +80,8 @@ def liftover_batch(df):
 
     # Iterate over pairs of 'chromosome' and 'base_pair_location' from the input DataFrame chunk.
     for chrom, pos in zip(df["chromosome"], df["base_pair_location"]):
-        # Ensure chromosome is a string and add 'chr' prefix for pyliftover
-        chrom_str = str(chrom) if not isinstance(chrom, str) else chrom
-        result = lo.convert_coordinate(f"chr{chrom_str}", pos)
+        # Add 'chr' prefix for pyliftover
+        result = lo.convert_coordinate(f"chr{chrom}", pos)
 
         # Append the converted location to the 'lifted' list.
         # 'result[0][1]' extracts the base pair location from the first successful conversion.
@@ -92,25 +91,26 @@ def liftover_batch(df):
     # Add the newly computed '_hg38' column to the original DataFrame chunk.
     return df.with_columns(pl.Series("_hg38", lifted, dtype=pl.Int64))
 
-# Define the expected schema after liftover_batch, including the new '_hg38' column.
-output_schema_after_liftover = {
-    "chromosome": pl.Int64,
-    "base_pair_location": pl.Int64,
-    "effect_allele": pl.String,
-    "other_allele": pl.String,
-    "beta": pl.Float64,
-    "standard_error": pl.Float64,
-    "effect_allele_frequency": pl.Float64,
-    "p_value": pl.Float64,
-    "variant_id": pl.String,
-    "rs_id": pl.String,
-    "n": pl.Int64,
-    "CHISQ": pl.Float64,
-    "_hg38": pl.Int64
-}
-
 # Only perform liftover if genome_build is not hg38
 if genome_build != "hg38":
+    # Define the expected schema after liftover_batch, including the new '_hg38' column.
+    # Modify according to how your input GWAS file is structured
+    output_schema_after_liftover = {
+        "chromosome": pl.Int64,
+        "base_pair_location": pl.Int64,
+        "effect_allele": pl.String,
+        "other_allele": pl.String,
+        "beta": pl.Float64,
+        "standard_error": pl.Float64,
+        "effect_allele_frequency": pl.Float64,
+        "p_value": pl.Float64,
+        "variant_id": pl.String,
+        # "rs_id": pl.String,
+        "n": pl.Int64,
+        # "CHISQ": pl.Float64,
+        "_hg38": pl.Int64
+    }
+
     print(f"Performing liftover from {genome_build} to hg38...")
     start_time = time.time()
     # Convert the 'gwas_df' into a LazyFrame (operations are not executed immediately but are instead recorded as a plan) 
@@ -127,7 +127,6 @@ else:
         pl.col("base_pair_location").alias("_hg38")
     )
 print(f"GWAS DataFrame after liftover {gwas_df.head()}")
-
 
 # Prepare for Join: Cast 'chromosome' column in 'gwas_df' to Utf8 
 # This ensures matching data types for join keys between gwas_df and ref_df.
@@ -152,7 +151,6 @@ joined_df = gwas_df.join(
     ((pl.col("effect_allele") == pl.col("alt")) &
         (pl.col("other_allele") == pl.col("ref")))
 )
-print(f"Joined and filtered DataFrame preview: {joined_df.head()}")
 
 # Apply transformations (frequency, beta, allele swapping) only if the alleles need flipping.
 joined_df = joined_df.with_columns([
@@ -179,7 +177,7 @@ joined_df = joined_df.with_columns([
         (pl.col("effect_allele") == pl.col("ref")) &
         (pl.col("other_allele") == pl.col("alt"))
     )
-    .then(pl.col("ref")) # THEN, set effect_allele to ref_df's 'ref'
+    .then(pl.col("alt")) # THEN, set effect_allele to ref_df's 'alt'
     .otherwise(pl.col("effect_allele")) # ELSE, keep original effect_allele
     .alias("effect_allele"),
 
@@ -188,7 +186,7 @@ joined_df = joined_df.with_columns([
         (pl.col("effect_allele") == pl.col("ref")) &
         (pl.col("other_allele") == pl.col("alt"))
     )
-    .then(pl.col("alt")) # THEN, set other_allele to ref_df's 'alt'
+    .then(pl.col("ref")) # THEN, set other_allele to ref_df's 'ref'
     .otherwise(pl.col("other_allele")) # ELSE, keep original other_allele
     .alias("other_allele"),
 
@@ -198,8 +196,6 @@ joined_df = joined_df.with_columns([
 
 # Drop unnecessary columns
 joined_df = joined_df.drop(["base_pair_location", "ref", "alt", "id"])
-
-print(f"Final processed DataFrame preview: {joined_df.head()}")
 
 # Write the Output DataFrame to a .tsv file 
 # Ensure the output directory exists
