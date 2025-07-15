@@ -105,9 +105,9 @@ if genome_build != "hg38":
         "effect_allele_frequency": pl.Float64,
         "p_value": pl.Float64,
         "variant_id": pl.String,
-        # "rs_id": pl.String,
+        "rs_id": pl.String,
         "n": pl.Int64,
-        # "CHISQ": pl.Float64,
+        "CHISQ": pl.Float64,
         "_hg38": pl.Int64
     }
 
