@@ -9,6 +9,19 @@ This project provides a Python-based pipeline to standardize GWAS (Genome-Wide A
 
 The containerization is done using Conda for reproducibility and can be run from the command line with user-defined input paths and genome build.
 
+## Project File Descriptions
+
+The code is modularized in the `code/` directory as follows:
+
+| File               | Description |
+|--------------------|-------------|
+| `main.py`          | Entry point of the pipeline. Parses CLI arguments, performs data loading, liftover (if needed), joining, allele transformation, and output writing. |
+| `liftover.py`      | Contains functions for performing coordinate liftover from other genome builds (e.g., `hg19`) to `hg38` using `pyliftover`. |
+| `io_utils.py`      | Handles file I/O operations. Provides functions to load the reference SNP list and GWAS summary statistics, and to write the processed results to disk. |
+| `join_utils.py`    | Joins GWAS data with the reference data and filters for matching or flipped allele orientations. |
+| `transformation.py`| Applies conditional transformations to modify effect sizes, allele frequencies, and allele labels. |
+| `constants.py`     | Stores shared constants like file paths, column schemas, and default output filenames. |
+
 ## Getting Started
 
 ### 1. Clone the Repository
@@ -23,7 +36,7 @@ cd gwas-practice-project/code
 
 These commands creates a new Conda environment named `gwas_env` using the dependencies listed in environment.yml and activates the `gwas_env`, so you're ready to run the project.
 
-Make sure to have [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) installed before executing the following commands. 
+Make sure to have [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) installed before executing the following commands. 
 
 ```
 conda env create --file environment.yml
