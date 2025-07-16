@@ -46,7 +46,7 @@ conda activate gwas_env
 ### 3. Run the Python script
 
 ```
-python new_gwas.py \
+python main.py \
   --genome-build hg19 \
   --ip-path "path/to/your/gwas_summary.tsv.gz" \
   --op-path "path/to/save/output/"
