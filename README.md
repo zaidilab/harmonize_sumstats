@@ -59,7 +59,7 @@ python main.py \
 - `--op-path` : Directory path where the processed and updated GWAS output file should be saved
 
 ### Notes
-- The input GWAS file should include these columns: `chromosome`, `base_pair_location`, `effect_allele`, `other_allele`, `beta`, `standard_error`, `effect_allele_frequency`, `p_value`, `variant_id`, `rs_id`, `n`, `CHISQ`.
+- The input GWAS file should atleast have these columns, named in this format: `chromosome`, `base_pair_location`, `effect_allele`, `other_allele`, `beta`, `effect_allele_frequency`, `variant_id`. If there are other columns present apart from these, you would have to do some script changes in the `liftover.py` file according to the instructions given in the comments.
 - Ensure your input file is tab-delimited (.tsv) and follows a consistent format.
 - The script expects a reference SNP list `1kg_hg38_hm3.snplist` located in a `data/` directory one level above the script. This file is included in the repository. 
 - The processed GWAS data will be saved as `GWAS_new_1M.tsv` within the directory specified by `--op-path`.
