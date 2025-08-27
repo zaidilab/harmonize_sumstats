@@ -28,23 +28,11 @@ def liftover_batch(df, genome_build):
     return df.with_columns(pl.Series("_hg38", lifted, dtype=pl.Int64))
 
 def perform_liftover(gwas_df, genome_build):
-    # Define the expected schema after liftover_batch, including the new '_hg38' column.
-    # Modify according to how your input GWAS file is structured, by giving the column name and its data type
-    output_schema_after_liftover = {
-        "chromosome": pl.Int64,
-        "base_pair_location": pl.Int64,
-        "effect_allele": pl.String,
-        "other_allele": pl.String,
-        "beta": pl.Float64,
-        "standard_error": pl.Float64,
-        "effect_allele_frequency": pl.Float64,
-        "p_value": pl.Float64,
-        "variant_id": pl.String,
-        "rs_id": pl.String,
-        "n": pl.Int64,
-        "CHISQ": pl.Float64,
-        "_hg38": pl.Int64   # Don't remove this column schema
-    }
+    # Infer schema from input GWAS dataframe
+    input_schema = {col: gwas_df.schema[col] for col in gwas_df.columns}
+
+    # Add the new _hg38 column for liftover
+    output_schema_after_liftover = {**input_schema, "_hg38": pl.Int64}
 
     print(f"Performing liftover from {genome_build} to hg38...")
     start = time.time()
