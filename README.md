@@ -43,6 +43,13 @@ conda env create --file environment.yml
 conda activate gwas_env
 ```
 
+To avoid a potential segmentation fault on Apple Silicon (M-series) chips, use the following command to force a native arm64 build. This ensures compatibility and optimal performance on modern Mac hardware.
+
+```
+CONDA_SUBDIR=osx-arm64 conda env create -f code/environment.yml
+conda activate gwas_env
+```
+
 ### 3. Run the Python script
 
 ```
